@@ -26,7 +26,8 @@
         <p class="money">{{ listing.price }} <span>$</span></p>
    
     {% if listing.active == True %}
-        {% comment %} Error message for the bid {% endcomment %}
+
+{% comment %} Error message for the bid {% endcomment %}
         <h3>{{ error }}</h3>
 
         {% if listing.current_bid == 0 %}
@@ -35,7 +36,7 @@
             <p>Current highest bid is : {{ listing.current_bid }}$</p>  
         {% endif %}  
         
-        {% comment %} Check if the user is the lister {% endcomment %}
+{% comment %} Check if the user is the lister {% endcomment %}
         {% if listing.user == request.user %}
             <p class="lister">Listed by: You</p>
             <div class="close">
@@ -64,6 +65,22 @@
         <p class="winner">Won by: {{ listing.winner }}</p>
     {% endif %}
 
+{% comment %} Comment section {% endcomment %}
+    {% if user.is_authenticated %}
+        <form action="{% url 'comment' listing.id %}" method="POST">
+            {% csrf_token %}
+            {{ comment }}
+            <input class="btn btn-secondary btn-sm" type="submit" value="Add Comment" />
+        </form>
+    {% endif %}
 
+    <ul>
+    {% for comment in comments %}       
+        <li>
+            <h5>{{ comment.title }}</h5> <p>by {{ comment.user }}</p>
+            <p>{{ comment.comment }}</p>
+        </li>
+    {% endfor %}
+    </ul>
 
 {% endblock %}

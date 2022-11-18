@@ -40,5 +40,8 @@ class Bids(models.Model):
 
 
 class Comments(models.Model):
-    pass
+    title = models.CharField(max_length=100, default="")
+    comment = models.TextField(default="")
+    listing = models.ForeignKey(Listing, on_delete=models.PROTECT, null=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="Commenter", null=True)
 

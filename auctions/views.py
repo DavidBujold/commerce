@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Category, Listing, Bids
+from .models import User, Category, Listing, Bids, Comments
 from django.contrib.auth.decorators import login_required
 
 
@@ -75,6 +75,10 @@ class bid_form(forms.ModelForm):
         model= Bids
         fields= ['bid']
 
+class comment_form(forms.ModelForm):
+    class Meta:
+        model= Comments
+        fields= ['title', 'comment']
 
 @login_required
 def create(request):
@@ -95,7 +99,9 @@ def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     return render(request, "auctions/listing.html", {
         "listing": listing,
-        "form": bid_form()
+        "form": bid_form(),
+        "comment_form": comment_form(),
+        "comments": Comments.objects.filter(listing = listing)
 
     })
 
@@ -124,6 +130,18 @@ def bid(request, listing_id):
         else:
             form= bid_form()
     return HttpResponseRedirect(reverse("listing", args={listing_id}))
+
+def comment(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    if request.method == 'POST':
+        comment= comment_form(request.POST)
+        if comment.is_valid():
+            new_comment = comment.save(commit=False)
+            new_comment.listing = listing
+            new_comment.user = request.user
+            new_comment.save()
+            return HttpResponseRedirect(reverse("listing", args={listing_id}))
+    
 
 def is_active(request, listing_id):
     listing = Listing.objects.get(id=listing_id)

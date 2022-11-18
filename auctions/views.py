@@ -151,13 +151,19 @@ def watchlist(request):
     })
 
 def categories(request):
-    return render(request, "auction/categories.html", {
+    return render(request, "auctions/categories.html", {
         "categories" : Category.objects.all(),
     })
 
 def category(request, name):
-    category = Category.objects.get(name=name)
-    listing = Listing.objects.filter(
+    category = Category.objects.get(name = name)
+    listings = Listing.objects.filter(
         category = category,
         active = True   
     )
+
+    return render(request, "auctions/category.html", {
+        "listings" : listings,
+        "title" : category.name
+
+    })

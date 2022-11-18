@@ -1,0 +1,46 @@
+body {
+    padding: 10px;
+}
+
+li {
+   list-style-type: none;
+   margin: 10px; 
+}
+.img-thumbnail {
+ height: 25vh;
+}
+           
+.money {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: green;
+}
+
+/* Grid layout */
+.listing{
+    grid-area: listing;
+    padding-top: 10px;
+    /* text-align: center; */
+}
+
+.img{
+    grid-area: img;
+}
+.desc{
+    grid-area: desc;
+}
+.price{
+    grid-area: price;
+}
+
+.content{
+    box-shadow: 5px 5px 10px grey;
+    display: grid;
+    height: 25vh;
+    width: 80vw;
+    margin-left: 15vw;
+    grid-template-areas: 
+    'img listing listing listing listing listing'
+    'img desc desc desc desc price'
+    'img desc desc desc desc price';
+}

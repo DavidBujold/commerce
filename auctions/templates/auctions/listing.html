@@ -1,0 +1,69 @@
+{% extends "auctions/layout.html" %}
+
+{% block title%}
+    {{listing.title}}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ listing.title}}</h1>
+    
+    {% if user.is_authenticated %}
+    <div>
+        <form action="{% url 'watcher' listing.id %}" method="POST">
+            {% csrf_token%}
+            {% if listing in request.user.watchlist.all %}
+                <input class="btn btn-secondary btn-sm" type="submit" value="Remove from Watchlist" />
+            {% else %}
+                <input class="btn btn-secondary btn-sm" type="submit" value="Add to Watchlist" />
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+
+
+        <img src="{{ listing.image }}" class="img-thumbnail">
+        <p>{{ listing.description }}</p>
+        <p class="money">{{ listing.price }} <span>$</span></p>
+   
+    {% if listing.active == True %}
+        {% comment %} Error message for the bid {% endcomment %}
+        <h3>{{ error }}</h3>
+
+        {% if listing.current_bid == 0 %}
+            <p>No current bid</p>
+        {% else %}
+            <p>Current highest bid is : {{ listing.current_bid }}$</p>  
+        {% endif %}  
+        
+        {% comment %} Check if the user is the lister {% endcomment %}
+        {% if listing.user == request.user %}
+            <p class="lister">Listed by: You</p>
+            <div class="close">
+                <form action="{% url 'is_active' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <input class="btn btn-secondary btn-sm" type="submit" value="Close Aunction" />
+                </form>
+            </div>
+        {% else %}
+            
+            <p class="lister">Listed by: {{ listing.user }}</p>
+
+            <div class="bid_form">
+                <form action ="{% url 'bid' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" class="button" value="Place your Bid">
+                </form>
+            </div>
+            
+        
+        {% endif %}
+    
+    {% else %}
+        <p class="lister">Listed by: {{ listing.user }}</p>
+        <p class="winner">Won by: {{ listing.winner }}</p>
+    {% endif %}
+
+
+
+{% endblock %}
